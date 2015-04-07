@@ -19,7 +19,7 @@ __all__ = (
     'DojoWidgetMixin', 'Input', 'Widget', 'TextInput', 'PasswordInput',
     'HiddenInput', 'MultipleHiddenInput', 'FileInput', 'Textarea',
     'DateInput', 'DateTimeInput', 'TimeInput', 'CheckboxInput', 'Select',
-    'NullBooleanSelect', 'SelectMultiple', 'RadioInput', 'RadioFieldRenderer',
+    'NullBooleanSelect', 'SelectMultiple', 'RadioInput', 'RadioSelect', 'RadioFieldRenderer',
     'RadioSelect', 'CheckboxSelectMultiple', 'MultiWidget', 'SplitDateTimeWidget',
     'SplitHiddenDateTimeWidget', 'SimpleTextarea', 'EditorInput', 'HorizontalSliderInput',
     'VerticalSliderInput', 'ValidationTextInput', 'ValidationPasswordInput',
@@ -283,7 +283,8 @@ class NullBooleanSelect(DojoWidgetMixin, widgets.NullBooleanSelect):
 class SelectMultiple(DojoWidgetMixin, widgets.SelectMultiple):
     dojo_type = 'dijit.form.MultiSelect'
 
-RadioInput = widgets.RadioInput
+RadioSelect = widgets.RadioSelect
+RadioInput = widgets.RadioSelect
 RadioFieldRenderer = widgets.RadioFieldRenderer
 
 class RadioSelect(DojoWidgetMixin, widgets.RadioSelect):
