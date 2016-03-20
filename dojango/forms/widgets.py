@@ -6,7 +6,7 @@ from django.utils import formats
 from django.utils.encoding import force_unicode
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
-from django.forms.util import flatatt
+from django.forms.utils import flatatt
 from django.utils import datetime_safe
 from dojango.util import json_encode
 from dojango.version import version_tuple
