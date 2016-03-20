@@ -19,7 +19,7 @@ __all__ = (
     'DojoWidgetMixin', 'Input', 'Widget', 'TextInput', 'PasswordInput',
     'HiddenInput', 'MultipleHiddenInput', 'FileInput', 'Textarea',
     'DateInput', 'DateTimeInput', 'TimeInput', 'CheckboxInput', 'Select',
-    'NullBooleanSelect', 'SelectMultiple', 'RadioInput', 'RadioSelect', 'RadioFieldRenderer',
+    'NullBooleanSelect', 'SelectMultiple', 'RadioChoiceInput', 'RadioInput', 'RadioSelect', 'RadioFieldRenderer',
     'RadioSelect', 'CheckboxSelectMultiple', 'MultiWidget', 'SplitDateTimeWidget',
     'SplitHiddenDateTimeWidget', 'SimpleTextarea', 'EditorInput', 'HorizontalSliderInput',
     'VerticalSliderInput', 'ValidationTextInput', 'ValidationPasswordInput',
@@ -285,6 +285,7 @@ class SelectMultiple(DojoWidgetMixin, widgets.SelectMultiple):
 
 RadioSelect = widgets.RadioSelect
 RadioInput = widgets.RadioSelect
+RadioChoiceInput = widgets.RadioChoiceInput
 RadioFieldRenderer = widgets.RadioFieldRenderer
 
 class RadioSelect(DojoWidgetMixin, widgets.RadioSelect):

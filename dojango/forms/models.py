@@ -2,7 +2,6 @@ from django.forms import *
 from django.forms.models import BaseModelFormSet
 from django.forms.models import BaseInlineFormSet
 from django.forms.models import ModelChoiceIterator
-from django.forms.models import InlineForeignKeyField
 
 from django.utils.text import capfirst
 
@@ -15,7 +14,7 @@ from dojango.forms.widgets import DojoWidgetMixin, Textarea, Select, SelectMulti
 
 __all__ = (
     'ModelForm', 'BaseModelForm', 'model_to_dict', 'fields_for_model',
-    'save_instance', 'ModelChoiceField', 'ModelMultipleChoiceField',
+    'ModelChoiceField', 'ModelMultipleChoiceField',
 )
     
 class ModelChoiceField(DojoFieldMixin, models.ModelChoiceField):
@@ -31,13 +30,6 @@ class ModelMultipleChoiceField(DojoFieldMixin, models.ModelMultipleChoiceField):
     widget = SelectMultiple
 
 # Fields #####################################################################
-
-class InlineForeignKeyField(DojoFieldMixin, InlineForeignKeyField, Field):
-    """
-    Overwritten InlineForeignKeyField to use the dojango HiddenInput
-    the dojango InlineForeignKeyHiddenInput as widget.
-    """
-    widget = HiddenInput
 
 # our customized model field => form field map
 # here it is defined which form field is used by which model field, when creating a ModelForm
@@ -56,7 +48,7 @@ MODEL_TO_FORM_FIELD_MAP = (
     (fields.related.ForeignKey, ModelChoiceField),
     (fields.files.ImageField, ImageField),
     (fields.files.FileField, FileField),
-    (fields.IPAddressField, IPAddressField),
+    (fields.GenericIPAddressField, GenericIPAddressField),
     (fields.related.ManyToManyField, ModelMultipleChoiceField),
     (fields.NullBooleanField, CharField),
     (fields.BooleanField, BooleanField),

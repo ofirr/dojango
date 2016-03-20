@@ -1,5 +1,6 @@
 from django import template
-from django.db.models import get_model
+from django.apps import apps
+get_model = apps.get_model
 from django.db import models
 from django.template import TemplateSyntaxError
 from django.template.loader import get_template

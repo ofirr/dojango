@@ -1,19 +1,16 @@
-from django import VERSION as django_version
-if django_version >= (1, 5, 0):
-    from django.conf.urls import patterns, url
-else:
-    from django.conf.urls.defaults import *
 from django.conf import settings
+from django.conf.urls import url
 
 from dojango.util import media
+from django.views import test, test_countries, test_states, datagrid_list
 
-urlpatterns = patterns('dojango',
-    url(r'^test/$', 'views.test', name='dojango-test'),
-    url(r'^test/countries/$', 'views.test_countries'),
-    url(r'^test/states/$', 'views.test_states'),
+urlpatterns = [
+    url(r'^test/$', test, name='dojango-test'),
+    url(r'^test/countries/$', test_countries),
+    url(r'^test/states/$', test_states),
     # Note: define accessible objects in DOJANGO_DATAGRID_ACCESS setting
-    url(r'^datagrid-list/(?P<app_name>.+)/(?P<model_name>.+)/$', 'views.datagrid_list', name="dojango-datagrid-list"),
-)
+    url(r'^datagrid-list/(?P<app_name>.+)/(?P<model_name>.+)/$', datagrid_list, name="dojango-datagrid-list"),
+]
 
 if settings.DEBUG:
     # serving the media files for dojango / dojo (js/css/...)

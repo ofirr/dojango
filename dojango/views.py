@@ -1,5 +1,6 @@
 # Create your views here.
-from django.db.models import get_model
+from django.apps import apps
+get_model = apps.get_model
 from django.db import models
 from django.shortcuts import render_to_response
 from django.conf import settings
