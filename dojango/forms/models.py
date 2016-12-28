@@ -2,6 +2,7 @@ from django.forms import *
 from django.forms.models import BaseModelFormSet
 from django.forms.models import BaseInlineFormSet
 from django.forms.models import ModelChoiceIterator
+from django.forms.models import InlineForeignKeyField
 
 from django.utils.text import capfirst
 
@@ -30,6 +31,13 @@ class ModelMultipleChoiceField(DojoFieldMixin, models.ModelMultipleChoiceField):
     widget = SelectMultiple
 
 # Fields #####################################################################
+
+class InlineForeignKeyField(DojoFieldMixin, InlineForeignKeyField, Field):
+    """
+    Overwritten InlineForeignKeyField to use the dojango HiddenInput
+    the dojango InlineForeignKeyHiddenInput as widget.
+    """
+    widget = HiddenInput
 
 # our customized model field => form field map
 # here it is defined which form field is used by which model field, when creating a ModelForm
