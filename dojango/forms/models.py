@@ -155,9 +155,9 @@ class BaseModelFormSet(BaseModelFormSet, BaseFormSet):
                 except IndexError:
                     pk_value = None
             if isinstance(pk, OneToOneField) or isinstance(pk, ForeignKey):
-                qs = pk.rel.to._default_manager.get_query_set()
+                qs = pk.rel.to._default_manager.get_queryset()
             else:
-                qs = self.model._default_manager.get_query_set()
+                qs = self.model._default_manager.get_queryset()
             qs = qs.using(form.instance._state.db)
             form.fields[self._pk_field.name] = ModelChoiceField(qs, initial=pk_value, required=False, widget=HiddenInput)
         BaseFormSet.add_fields(self, form, index)
