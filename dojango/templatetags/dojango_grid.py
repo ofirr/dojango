@@ -25,7 +25,7 @@ def simple_datagrid(parser, token):
     """
     bits = token.split_contents()
     if len(bits) < 3:
-        raise TemplateSyntaxError, "You have to pass app- and model-name to {% simple_datagrid app model %}"
+        raise TemplateSyntaxError("You have to pass app- and model-name to {% simple_datagrid app model %}")
     return DatagridNode(bits[1],bits[2],None)
 
 @register.tag
@@ -108,15 +108,15 @@ class DatagridNode(template.Node):
         # User overrides
         if self.options:
             opts.update(extract_nodelist_options(self.options,context))
-        if not opts['query'].has_key('inclusions'): opts['query']['inclusions'] = []
+        if 'inclusions' not in opts['query']: opts['query']['inclusions'] = []
             
         # we must ensure that the json_store_url is defined
         if not opts.get('json_store_url', False):
-            raise TemplateSyntaxError, "Please enable the url 'dojango-datagrid-list' in your urls.py or pass a 'json_store_url' to the datagrid templatetag."
+            raise TemplateSyntaxError("Please enable the url 'dojango-datagrid-list' in your urls.py or pass a 'json_store_url' to the datagrid templatetag.")
         
         # Incase list_display was passed as tuple, turn to list for mutability
         if not self.model and not opts.get('list_display', False):
-            raise TemplateSyntaxError, "'list_display' not defined. If you use your own 'json_store_url' you have to define which fields are visible."
+            raise TemplateSyntaxError("'list_display' not defined. If you use your own 'json_store_url' you have to define which fields are visible.")
         opts['list_display'] = list(opts['list_display'])
         
         # Config for template
@@ -131,28 +131,28 @@ class DatagridNode(template.Node):
         for field in opts['list_display']:
             ret = {'attname':field}
             for q in FIELD_ATTRIBUTES:
-                if opts.has_key(q) and opts[q].has_key(field):
+                if q in opts and field in opts[q]:
                      ret[q] = opts[q][field]
             # custom default logic
-            if not ret.has_key('label'):
+            if 'label' not in ret:
                 ret['label'] = verbose_field_names.get(field, field.replace('_', ' '))
-            if not ret.has_key('column_width'):
+            if 'column_width' not in ret:
                 ret['column_width']= opts['default_width']
             # add as inclusion if not a attribute of model
-            if self.model and not field in map(lambda x: x.attname, self.model._meta.fields):
+            if self.model and not field in [x.attname for x in self.model._meta.fields]:
                 opts['query']['inclusions'].append(field)
             # add to header
             opts['headers'].append(ret)
               
         # no sort fields
-        if opts.has_key("nosort"): 
+        if "nosort" in opts: 
             opts['nosort'] = "".join(["||row==%s"%(opts['list_display'].index(r)+1) for r in opts['nosort']])
         
         # additional context info/modifications
         opts["model_name"] = self.model_name
         opts["app_name"] = self.app_name
         opts['query']['inclusions'] = ",".join(opts['query']['inclusions'])
-        if opts.has_key('search'):
+        if 'search' in opts:
             opts['search_fields'] = ",".join(opts['search'])
             opts['show_search'] = opts.get('show_search', True)
         else:

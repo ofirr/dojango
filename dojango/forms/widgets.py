@@ -3,7 +3,7 @@ import time
 
 from django.forms import *
 from django.utils import formats
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_str
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 from django.forms.utils import flatatt
@@ -92,7 +92,7 @@ class DojoWidgetMixin:
                 if isinstance(value, datetime.time):
                     value = "T" + str(value) # see dojo.date.stamp
                 inner_dict[i] = value
-            elif not inner_dict.has_key(i):
+            elif i not in inner_dict:
                 inner_dict[i] = {}
             inner_dict = inner_dict[i]
         return attrs
@@ -344,8 +344,8 @@ class EditorInput(Textarea):
         if value is None: value = ''
         final_attrs = self.build_attrs(attrs, name=name)
         # dijit.Editor must be rendered in a div (see dijit/_editor/RichText.js)
-        return mark_safe(u'<div%s>%s</div>' % (flatatt(final_attrs),
-                force_unicode(value))) # we don't escape the value for the editor
+        return mark_safe('<div%s>%s</div>' % (flatatt(final_attrs),
+                force_str(value))) # we don't escape the value for the editor
 
 class HorizontalSliderInput(TextInput):
     dojo_type = 'dijit.form.HorizontalSlider'
@@ -532,7 +532,7 @@ class ComboBoxStore(TextInput):
         final_attrs = self.build_attrs(attrs, type=self.input_type, name=name, store=store_id)
         if value != '':
             # Only add the 'value' attribute if a value is non-empty.
-            final_attrs['value'] = force_unicode(self._format_value(value))
+            final_attrs['value'] = force_str(self._format_value(value))
         self.store_attrs.update({
             'dojoType': self.store,
             'url': self.url,
@@ -540,7 +540,7 @@ class ComboBoxStore(TextInput):
         })
         # TODO: convert store attributes to valid js-format (False => false, dict => {}, array = [])
         store_node = '<div%s></div>' % flatatt(self.store_attrs)
-        return mark_safe(u'%s<input%s />' % (store_node, flatatt(final_attrs)))
+        return mark_safe('%s<input%s />' % (store_node, flatatt(final_attrs)))
 
     def get_store_id(self, id, name):
         return "_store_" + (id and id or name)

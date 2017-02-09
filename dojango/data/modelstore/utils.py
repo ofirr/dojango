@@ -1,7 +1,7 @@
 from django.utils.datastructures import SortedDict
 from django.db.models import get_model
-from fields import StoreField
-from exceptions import StoreException
+from .fields import StoreField
+from .exceptions import StoreException
 
 def get_object_from_identifier(identifier, valid=None):
     """ Helper function to resolve an item identifier
@@ -41,24 +41,24 @@ def get_fields_and_servicemethods(bases, attrs, include_bases=True):
         See the original function for doc and comments.
     """
     fields = [ (field_name, attrs.pop(field_name)) for \
-        field_name, obj in attrs.items() if isinstance(obj, StoreField)]
+        field_name, obj in list(attrs.items()) if isinstance(obj, StoreField)]
 
     # Get the method name directly from the __servicemethod__ dict
     # as set by the decorator
     methods = [ (method.__servicemethod__['name'], method) for \
-        method in attrs.values() if hasattr(method, '__servicemethod__') ]
+        method in list(attrs.values()) if hasattr(method, '__servicemethod__') ]
 
     if include_bases:
         for base in bases[::-1]:
 
             # Grab the fields and servicemethods from the base classes
             try:
-                fields = base.fields.items() + fields
+                fields = list(base.fields.items()) + fields
             except AttributeError:
                 pass
 
             try:
-                methods = base.servicemethods.items() + methods
+                methods = list(base.servicemethods.items()) + methods
             except AttributeError:
                 pass
 

@@ -1,6 +1,6 @@
-from stores import Store
-from fields import StoreField
-from methods import BaseMethod
+from .stores import Store
+from .fields import StoreField
+from .methods import BaseMethod
 
 class ChildrenMethod(BaseMethod):
     """ A method proxy that will resolve the children

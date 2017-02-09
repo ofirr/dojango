@@ -155,7 +155,7 @@ class MemcachedZipHandler(webapp.RequestHandler):
         self.error(304)
         return
     # if-modified-since was passed by the browser
-    if self.request.headers.has_key('If-Modified-Since'):
+    if 'If-Modified-Since' in self.request.headers:
         dt = self.request.headers.get('If-Modified-Since').split(';')[0]
         modsince = datetime.datetime.strptime(dt, "%a, %d %b %Y %H:%M:%S %Z")
         if modsince >= self.current_last_modified:
@@ -220,7 +220,7 @@ class MemcachedZipHandler(webapp.RequestHandler):
           resp_data.file = zip_archive.read(file_path)
           resp_data.lastmod = lastmod
           resp_data.etag = '"%s"' % md5_constructor(resp_data.file).hexdigest()
-        except (KeyError, RuntimeError), err:
+        except (KeyError, RuntimeError) as err:
           # no op
           x = False
           resp_data = None
@@ -229,7 +229,7 @@ class MemcachedZipHandler(webapp.RequestHandler):
           
       try:
         archive_name = file_itr.next()[0]
-      except (StopIteration), err:
+      except (StopIteration) as err:
         archive_name = False
 
     return resp_data
@@ -254,7 +254,7 @@ class MemcachedZipHandler(webapp.RequestHandler):
       try:
         zip_archive = zipfile.ZipFile(zipfilename)
         self.zipfile_cache[zipfilename] = zip_archive
-      except (IOError, RuntimeError), err:
+      except (IOError, RuntimeError) as err:
         logging.error('Can\'t open zipfile %s, cause: %s' % (zipfilename,
                                                              err))
     return zip_archive
@@ -391,7 +391,7 @@ class MemcachedZipHandler(webapp.RequestHandler):
     try:
       if not memcache.add("%s%s" % (self.CACHE_PREFIX, filename), data):
         memcache.replace("%s%s" % (self.CACHE_PREFIX, filename), data)
-    except (ValueError), err:
+    except (ValueError) as err:
       logging.warning("Data size too large to cache\n%s" % err)
 
   def Write404Error(self):

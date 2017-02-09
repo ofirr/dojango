@@ -1,5 +1,6 @@
 # Create your views here.
 from django.apps import apps
+from functools import reduce
 get_model = apps.get_model
 from django.db import models
 from django.shortcuts import render_to_response
@@ -53,23 +54,23 @@ def datagrid_list(request, app_name, model_name, access_model_callback=access_mo
     
     # modify query set based on the GET params, dont do the start/count splice
     # custom options passed from "query" param in datagrid
-    for key in [ d for d in request.GET.keys() if not d in AVAILABLE_OPTS]:
+    for key in [ d for d in list(request.GET.keys()) if not d in AVAILABLE_OPTS]:
         target = target.filter(**{str(key):request.GET[key]})
     num = target.count()
 
     # until after all clauses added
-    if request.GET.has_key('search') and request.GET.has_key('search_fields'):
-        ored = [models.Q(**{str(k).strip(): unicode(request.GET['search'])} ) for k in request.GET['search_fields'].split(",")]
+    if 'search' in request.GET and 'search_fields' in request.GET:
+        ored = [models.Q(**{str(k).strip(): str(request.GET['search'])} ) for k in request.GET['search_fields'].split(",")]
         target = target.filter(reduce(operator.or_, ored))
 
-    if request.GET.has_key('sort') and request.GET["sort"] not in request.GET["inclusions"] and request.GET["sort"][1:] not in request.GET["inclusions"]:
+    if 'sort' in request.GET and request.GET["sort"] not in request.GET["inclusions"] and request.GET["sort"][1:] not in request.GET["inclusions"]:
 		# if the sort field is in inclusions, it must be a function call.. 
         target = target.order_by(request.GET['sort'])
     else:
-		if request.GET.has_key('sort') and request.GET["sort"].startswith('-'):
+		if 'sort' in request.GET and request.GET["sort"].startswith('-'):
 			target = sorted(target, lambda x,y: cmp(getattr(x,request.GET["sort"][1:])(),getattr(y,request.GET["sort"][1:])()));
 			target.reverse();
-		elif request.GET.has_key('sort'):
+		elif 'sort' in request.GET:
 			target =  sorted(target, lambda x,y: cmp(getattr(x,request.GET["sort"])(),getattr(y,request.GET["sort"])()));
     
     
@@ -84,14 +85,14 @@ def datagrid_list(request, app_name, model_name, access_model_callback=access_mo
             for f in data._meta.fields:
                 if access_field_callback(app_name, model_name, f.attname, request, data):
                     if isinstance(f, models.ImageField) or isinstance(f, models.FileField): # filefields can't be json serialized
-                        ret[f.attname] = unicode(getattr(data, f.attname))
+                        ret[f.attname] = str(getattr(data, f.attname))
                     else:
                         ret[f.attname] = getattr(data, f.attname) #json_encode() this?
-            fields = dir(data.__class__) + ret.keys()
+            fields = dir(data.__class__) + list(ret.keys())
             add_ons = [k for k in dir(data) if k not in fields and access_field_callback(app_name, model_name, k, request, data)]
             for k in add_ons:
                 ret[k] = getattr(data, k)
-            if request.GET.has_key('inclusions'):
+            if 'inclusions' in request.GET:
                 for k in request.GET['inclusions'].split(','):
                     if k == "": continue
                     if access_field_callback(app_name, model_name, k, request, data): 
@@ -104,7 +105,7 @@ def datagrid_list(request, app_name, model_name, access_model_callback=access_mo
                                 ret[k] = getattr(data,k)
             complete.append(ret)
         else:
-            raise Exception, "You're not allowed to query the model '%s.%s' (add it to the array of the DOJANGO_DATAGRID_ACCESS setting)" % (model_name, app_name)
+            raise Exception("You're not allowed to query the model '%s.%s' (add it to the array of the DOJANGO_DATAGRID_ACCESS setting)" % (model_name, app_name))
     return to_dojo_data(complete, identifier=model._meta.pk.name, num_rows=num)
 
 ###########

@@ -7,9 +7,9 @@ else:
 from django.utils.encoding import smart_unicode
 from django.core.paginator import Paginator
 
-from utils import get_fields_and_servicemethods
-from exceptions import StoreException, ServiceException
-from services import JsonService, servicemethod
+from .utils import get_fields_and_servicemethods
+from .exceptions import StoreException, ServiceException
+from .services import JsonService, servicemethod
 
 __all__ = ('Store', 'ModelQueryStore')
 
@@ -26,7 +26,7 @@ class StoreMetaclass(type):
 
         # Tell each field the name of the attribute used to reference it
         # in the Store
-        for fieldname, field in fields.items():
+        for fieldname, field in list(fields.items()):
             setattr(field, '_store_attr_name', fieldname)
         attrs['fields'] = fields
 
@@ -115,7 +115,7 @@ class BaseStore(object):
             self.service.store = self
 
             # Populate all the declared servicemethods
-            for method in self.servicemethods.values():
+            for method in list(self.servicemethods.values()):
                 self.service.add_method(method)
 
         except StoreException:
@@ -211,7 +211,7 @@ class BaseStore(object):
                 if not store.service: # Ignore when no service is defined.
                     continue
 
-                for name, method in store.service.methods.items():
+                for name, method in list(store.service.methods.items()):
                     try:
                         self.service.get_method(name)
                         raise StoreException('Combined stores have conflicting service method name "%s"' % name)
@@ -320,7 +320,7 @@ class BaseStore(object):
 
         # Do we have a 'label' and is it already the
         # name of one of the declared fields?
-        if label and ( label not in self.get_option('fields').keys() ):
+        if label and ( label not in list(self.get_option('fields').keys()) ):
 
             # Have we defined a 'get_label' method on the store?
             if callable( getattr(self, 'get_label', None) ):
@@ -362,20 +362,19 @@ class BaseStore(object):
         for obj in self.get_option('objects'):
             self._start_object(obj)
 
-            for field in self.get_option('fields').values():
+            for field in list(self.get_option('fields').values()):
                 self._handle_field(obj, field)
 
             self._end_object(obj)
         self._end_serialization()
         self._merge_stores()
 
-class Store(BaseStore):
+class Store(BaseStore, metaclass=StoreMetaclass):
     """ Just defines the __metaclass__
 
         All the real functionality is implemented in
         BaseStore
     """
-    __metaclass__ = StoreMetaclass
 
 class ModelQueryStore(Store):
     """ A store designed to be used with dojox.data.QueryReadStore
@@ -419,7 +418,7 @@ class ModelQueryStore(Store):
 
         # We need the request.GET QueryDict to be mutable.
         query_dict = {}
-        for k,v in request.GET.items():
+        for k,v in list(request.GET.items()):
             query_dict[k] = v
 
         # dojox.data.QueryReadStore only handles sorting by a single field
@@ -449,7 +448,7 @@ class ModelQueryStore(Store):
         paginator = Paginator(objects, count)
 
         page_num = 1
-        for i in xrange(1, paginator.num_pages + 1):
+        for i in range(1, paginator.num_pages + 1):
             if paginator.page(i).start_index() <= start_index <= paginator.page(i).end_index():
                 page_num = i
                 break

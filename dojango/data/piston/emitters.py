@@ -44,7 +44,7 @@ class DojoDataEmitter(Emitter):
         if isinstance(self.data, QuerySet):
             unicode_lookup_table = dict()
 
-            [unicode_lookup_table.__setitem__(item.pk, unicode(item)) \
+            [unicode_lookup_table.__setitem__(item.pk, str(item)) \
                 for item in self.data]
 
             for dict_item in data:

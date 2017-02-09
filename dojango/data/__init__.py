@@ -76,7 +76,7 @@ class QueryReadStoreInfo(QueryInfo):
     
     def set_filters(self):
         query_dict = {}
-        for k,v in self.request[self.request.method].items():
+        for k,v in list(self.request[self.request.method].items()):
             query_dict[k] = v
 
 class JsonRestStoreInfo(QueryReadStoreInfo):

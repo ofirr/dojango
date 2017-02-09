@@ -20,8 +20,8 @@ def find_app_dir(app_name):
         else:
             mod = getattr(__import__(m, {}, {}, [force_str(a)]), a)
         return path.dirname(path.abspath(mod.__file__))
-    except ImportError, e:
-        raise ImproperlyConfigured, 'ImportError %s: %s' % (app_name, e.args[0])
+    except ImportError as e:
+        raise ImproperlyConfigured('ImportError %s: %s' % (app_name, e.args[0]))
 
 def find_app_dojo_dir(app_name):
     """Checks, if a dojo-media directory exists within a given app and returns the absolute path to it."""
@@ -59,7 +59,7 @@ def _check_app_dojo_dirs():
         for elem in root_and_urls:
             root, url = elem
             if url in check and root != dojo_media_library[check[url]][0]:
-                raise ImproperlyConfigured, (
+                raise ImproperlyConfigured(
                     "Two apps (%s, %s) contain the same dojo module (%s) in the dojo-media-directory pointing to two different directories (%s, %s)" %
                     (repr(app), repr(check[url]), repr(root.split("/")[-1]), repr(root), repr(dojo_media_library[check[url]][0][0])))
             check[url] = app

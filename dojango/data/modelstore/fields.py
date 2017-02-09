@@ -1,6 +1,6 @@
-import utils
-from exceptions import FieldException
-import methods
+from . import utils
+from .exceptions import FieldException
+from . import methods
 
 __all__ = ('FieldException', 'StoreField'
             'ReferenceField', 'DojoDateField')
@@ -102,7 +102,7 @@ class StoreField(object):
             Either the name of the value passed to 'order_by()' on Django
             QuerySets or some method which returns the value.
         """
-        if (self._sort_field is None) or isinstance(self._sort_field, (str, unicode) ):
+        if (self._sort_field is None) or isinstance(self._sort_field, str ):
             return self._sort_field
         else:
             return self._sort_field()

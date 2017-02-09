@@ -1,5 +1,5 @@
-import utils
-from exceptions import MethodException
+from . import utils
+from .exceptions import MethodException
 
 class Arg(object):
     """ The base placeholder argument class
@@ -104,7 +104,7 @@ class BaseMethod(object):
             args.append(arg)
         self.args = args
 
-        for key, val in self.kwargs.items():
+        for key, val in list(self.kwargs.items()):
             self.kwargs.update({
                 key: self.field.proxied_args.get(hasattr(val, '__name__') and val.__name__ or val, val)
             })
@@ -164,7 +164,7 @@ class BaseMethod(object):
         if callable(self.method_or_methodname):
             return self.method_or_methodname
 
-        if not isinstance(self.method_or_methodname, (str, unicode) ):
+        if not isinstance(self.method_or_methodname, str ):
             raise MethodException('Method must a string or callable')
 
         if obj is not None:

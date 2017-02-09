@@ -71,4 +71,4 @@ class DojoAutoRequire:
         return response
 
     def _get_dojo_requires(self, dojo_modules):
-        return "\n".join([u"dojo.require(\"%s\");" % require for require in dojo_modules])
+        return "\n".join(["dojo.require(\"%s\");" % require for require in dojo_modules])

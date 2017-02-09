@@ -51,15 +51,15 @@ except Exception:
 
         If strings_only is True, don't convert (some) non-string-like objects.
         """
-        if strings_only and isinstance(s, (types.NoneType, int, long, datetime.datetime, datetime.date, datetime.time, float)):
+        if strings_only and isinstance(s, (type(None), int, datetime.datetime, datetime.date, datetime.time, float)):
             return s
         try:
-            if not isinstance(s, basestring,):
+            if not isinstance(s, str,):
                 if hasattr(s, '__unicode__'):
-                    s = unicode(s)
+                    s = str(s)
                 else:
                     try:
-                        s = unicode(str(s), encoding, errors)
+                        s = str(str(s), encoding, errors)
                     except UnicodeEncodeError:
                         if not isinstance(s, Exception):
                             raise
@@ -71,12 +71,12 @@ except Exception:
                         # output should be.
                         s = ' '.join([force_unicode(arg, encoding, strings_only,
                                 errors) for arg in s])
-            elif not isinstance(s, unicode):
+            elif not isinstance(s, str):
                 # Note: We use .decode() here, instead of unicode(s, encoding,
                 # errors), so that if s is a SafeString, it ends up being a
                 # SafeUnicode at the end.
                 s = s.decode(encoding, errors)
-        except UnicodeDecodeError, e:
+        except UnicodeDecodeError as e:
             raise DjangoUnicodeDecodeError(s, *e.args)
         return s
 
@@ -135,8 +135,8 @@ def json_encode(data):
         elif ObjectId and isinstance(data, ObjectId):
             ret = str(data)
         # here we need to encode the string as unicode (otherwise we get utf-16 in the json-response)
-        elif isinstance(data, basestring):
-            ret = unicode(data)
+        elif isinstance(data, str):
+            ret = str(data)
         # see http://code.djangoproject.com/ticket/5868
         elif isinstance(data, Promise):
             ret = force_unicode(data)
@@ -159,11 +159,11 @@ def json_encode(data):
         for f in data._meta.fields:
             # special FileField handling (they can't be json serialized)
             if isinstance(f, ImageField) or isinstance(f, FileField):
-                ret[f.attname] = unicode(getattr(data, f.attname))
+                ret[f.attname] = str(getattr(data, f.attname))
             else:
                 ret[f.attname] = _any(getattr(data, f.attname))
         # And additionally encode arbitrary properties that had been added.
-        fields = dir(data.__class__) + ret.keys()
+        fields = dir(data.__class__) + list(ret.keys())
         # ignoring _state and delete properties
         add_ons = [k for k in dir(data) if k not in fields and k not in ('delete', '_state',)]
         for k in add_ons:
@@ -185,7 +185,7 @@ def json_encode(data):
     
     def _dict(data):
         ret = {}
-        for k,v in data.items():
+        for k,v in list(data.items()):
             ret[k] = _any(v)
         return ret
     

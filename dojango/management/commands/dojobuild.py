@@ -85,7 +85,7 @@ class Command(BaseCommand):
             else:
                 executable = './build.sh'
                 # force executable rights!
-                os.chmod(os.path.join(buildscript_dir, 'build.sh'), 0755)
+                os.chmod(os.path.join(buildscript_dir, 'build.sh'), 0o755)
         # use the passed version for building
         version = options.get('build_version', None)
         if not version:
@@ -192,8 +192,8 @@ see: http://dojotoolkit.org/license for details
                 os.remove("%s/dojo/_base.js" % self.dojo_release_dir)
                 os.remove("%s/dojo/build.txt" % self.dojo_release_dir)
                 os.remove("%s/dojo/tests.js" % self.dojo_release_dir)
-        except Exception, e:
-            print e
+        except Exception as e:
+            print(e)
             sys.exit(1)
         # cleanup from above, refs #6616
         shutil.move("%s/util/buildscripts/_copyright.txt" % self.dojo_base_dir, "%s/util/buildscripts/copyright.txt" % self.dojo_base_dir)
@@ -271,8 +271,8 @@ see: http://dojotoolkit.org/license for details
                             os.removedirs(os.path.join(root, dir))
                         except OSError:
                             pass
-        except Exception, e:
-            print e
+        except Exception as e:
+            print(e)
             sys.exit(1)
 
     DOJO_ZIP_SPECIAL = {'dojox': ['form', 'widget', 'grid']} # these modules will be zipped separately
@@ -285,7 +285,7 @@ see: http://dojotoolkit.org/license for details
         for folder in os.listdir(self.dojo_release_dir):
             module_dir = '%s/%s' % (self.dojo_release_dir, folder)
             if os.path.isdir(module_dir):
-                if folder in self.DOJO_ZIP_SPECIAL.keys():
+                if folder in list(self.DOJO_ZIP_SPECIAL.keys()):
                     for special_module in self.DOJO_ZIP_SPECIAL[folder]:
                         special_module_dir = os.path.join(module_dir, special_module)
                         create_zip(special_module_dir, 

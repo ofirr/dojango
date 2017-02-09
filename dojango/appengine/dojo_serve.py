@@ -34,7 +34,7 @@ class FlushCache(webapp.RequestHandler):
             self.response.out.write("Memcache successfully flushed!<br/>")
             if stats:
                 self.response.out.write("<p>Memcache stats:</p><p>")
-                for key in stats.keys():
+                for key in list(stats.keys()):
                     self.response.out.write("%s: %s<br/>" % (key, stats[key]))
                 self.response.out.write("</p>")
 

@@ -6,7 +6,7 @@ from django.forms.models import InlineForeignKeyField
 
 from django.utils.text import capfirst
 
-from formsets import BaseFormSet
+from .formsets import BaseFormSet
 
 from django.db.models import fields
 
@@ -118,11 +118,10 @@ class ModelFormMetaclass(models.ModelFormMetaclass):
         attrs["formfield_callback"] = formfield_function
         return super(ModelFormMetaclass, cls).__new__(cls, name, bases, attrs)
 
-class ModelForm(models.ModelForm):
+class ModelForm(models.ModelForm, metaclass=ModelFormMetaclass):
     """
     Overwritten 'ModelForm' using the metaclass defined above.
     """
-    __metaclass__ = ModelFormMetaclass
 
 def modelform_factory(*args, **kwargs):
     """Changed modelform_factory function, where we use our own formfield_callback"""

@@ -5,8 +5,8 @@ else:
     from django.utils import simplejson as json
 from django.http import HttpResponseNotAllowed, HttpResponseServerError
 
-from util import to_json_response
-from util import to_dojo_data
+from .util import to_json_response
+from .util import to_dojo_data
 
 try:
     from functools import wraps
@@ -134,17 +134,17 @@ def __prepare_json_ret(request, ret, callback_param_name=None, use_iframe=False)
     if callback_param_name:
         func_name = request.GET.get(callback_param_name, "callbackParamName")
     try:
-        if not ret.has_key('success'):
+        if 'success' not in ret:
             ret['success'] = True
-    except AttributeError, e:
+    except AttributeError as e:
         raise Exception("The returned data of your function must be a dictionary!")
     json_ret = ""
     try:
         # Sometimes the serialization fails, i.e. when there are too deeply nested objects or even classes inside
         json_ret = to_json_response(ret, func_name, use_iframe)
-    except Exception, e:
-        print '\n\n===============Exception=============\n\n'+str(e)+'\n\n' 
-        print ret
-        print '\n\n'
+    except Exception as e:
+        print('\n\n===============Exception=============\n\n'+str(e)+'\n\n') 
+        print(ret)
+        print('\n\n')
         return HttpResponseServerError(content=str(e))
     return json_ret

@@ -14,9 +14,9 @@ class DojangoParamsNode(template.Node):
     def render(self, context):
         config = Config(self.profile, self.version)
         if not config.config:
-            raise template.TemplateSyntaxError, "Could not find the profile '%s' in the DOJANGO_DOJO_PROFILES settings" % (self.profile)
+            raise template.TemplateSyntaxError("Could not find the profile '%s' in the DOJANGO_DOJO_PROFILES settings" % (self.profile))
         if not config.dojo_base_url:
-            raise template.TemplateSyntaxError, "The version %s is not supported by the dojango profile '%s'" % (self.version, self.profile)
+            raise template.TemplateSyntaxError("The version %s is not supported by the dojango profile '%s'" % (self.version, self.profile))
         context['DOJANGO'] = config.get_context_dict()
         return ''
         

@@ -1,6 +1,6 @@
 import os
 import sys
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import zipfile
 
 from optparse import make_option
@@ -55,24 +55,24 @@ class Command(BaseCommand):
                 'move_to_dir':move_to_dir,
             })
         else:
-            print "Downloading %s to %s" % (dl_url, dl_to_path)
+            print("Downloading %s to %s" % (dl_url, dl_to_path))
             self.download(dl_url, dl_to_path)
             if self.total_kb == -1: # stupid bug in urllib (there is no IOError thrown, when a 404 occurs
                 os.remove(dl_to_path)
-                print ""
+                print("")
                 raise CommandError("There is no source release at %(url)s" % {
                     'url':dl_url,
                     'dir':dl_to_path,
                 })
-            print "\nExtracting file %s to %s" % (dl_to_path, move_to_dir)
+            print("\nExtracting file %s to %s" % (dl_to_path, move_to_dir))
             self.unzip_file_into_dir(dl_to_path, self.extract_to_dir)
             os.rename(move_from_dir, move_to_dir)
-            print "Removing previous downloaded file %s" % dl_to_path
+            print("Removing previous downloaded file %s" % dl_to_path)
             os.remove(dl_to_path)
 
     def download(self, dl_url, to_dir):
         try:
-            urllib.urlretrieve(dl_url, to_dir, self.dl_reporthook)
+            urllib.request.urlretrieve(dl_url, to_dir, self.dl_reporthook)
         except IOError:
             raise CommandError("Downloading from %(url)s to directory %(dir)s failed." % {
                 'url':dl_url,
