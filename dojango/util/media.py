@@ -1,5 +1,6 @@
 from django.conf import settings
 from dojango.conf import settings as dojango_settings
+from django.conf.urls import url
 from django.core.exceptions import ImproperlyConfigured
 from django.utils._os import safe_join
 from django.utils.encoding import force_str
@@ -93,5 +94,5 @@ _check_app_dojo_dirs() # is each dojo module just created once?
 
 dojo_media_urls = _build_urlmap()
 # url_patterns that can be used directly within urls.py
-url_patterns = [ ('^%s(?P<path>.*)$' % url, serve, {'document_root': root, 'show_indexes': True} )
-         for url, root in dojo_media_urls ]
+url_patterns = [url('^%s(?P<path>.*)$' % url_str, serve, {'document_root': root, 'show_indexes': True} )
+         for url_str, root in dojo_media_urls ]
