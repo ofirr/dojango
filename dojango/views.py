@@ -64,14 +64,14 @@ def datagrid_list(request, app_name, model_name, access_model_callback=access_mo
         target = target.filter(reduce(operator.or_, ored))
 
     if 'sort' in request.GET and request.GET["sort"] not in request.GET["inclusions"] and request.GET["sort"][1:] not in request.GET["inclusions"]:
-		# if the sort field is in inclusions, it must be a function call.. 
+        # if the sort field is in inclusions, it must be a function call..
         target = target.order_by(request.GET['sort'])
     else:
-		if 'sort' in request.GET and request.GET["sort"].startswith('-'):
-			target = sorted(target, lambda x,y: cmp(getattr(x,request.GET["sort"][1:])(),getattr(y,request.GET["sort"][1:])()));
-			target.reverse();
-		elif 'sort' in request.GET:
-			target =  sorted(target, lambda x,y: cmp(getattr(x,request.GET["sort"])(),getattr(y,request.GET["sort"])()));
+        if 'sort' in request.GET and request.GET["sort"].startswith('-'):
+            target = sorted(target, lambda x,y: cmp(getattr(x,request.GET["sort"][1:])(),getattr(y,request.GET["sort"][1:])()));
+            target.reverse();
+        elif 'sort' in request.GET:
+            target =  sorted(target, lambda x,y: cmp(getattr(x,request.GET["sort"])(),getattr(y,request.GET["sort"])()));
     
     
     # get only the limit number of models with a given offset
