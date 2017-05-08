@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls import url
 
 from dojango.util import media
-from django.views import test, test_countries, test_states, datagrid_list
+from dojango.views import test, test_countries, test_states, datagrid_list
 
 urlpatterns = [
     url(r'^test/$', test, name='dojango-test'),
